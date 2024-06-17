@@ -4,8 +4,7 @@ import React from "react";
 const Home = () => {
   return (
     <>
-      <h1 className="font-bold text-white">Home</h1>
-      <UserButton afterSignOutUrl="/" />
+      <h1 className="head-text text-white text-left">Home</h1>
     </>
   );
 };
