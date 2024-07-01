@@ -3,16 +3,20 @@ import { fetchAllThreads } from "@/lib/actions/thread.action";
 import NoResults from "@/components/shared/NoResults";
 import { auth } from "@clerk/nextjs/server";
 import ThreadCard from "@/components/cards/ThreadCard";
+import { getUserById } from "@/lib/actions/user.action";
 
 const Home = async () => {
+  const stringifyObject = (obj: any) => JSON.parse(JSON.stringify(obj));
   const { userId } = auth();
   let allThreads;
   let isNextPage;
-
+  let currentUser;
   try {
     const result = await fetchAllThreads();
+    const userResult = await getUserById(userId!);
     allThreads = result.allThreads;
     isNextPage = result.isNextPage;
+    currentUser = stringifyObject(userResult);
   } catch (err: any) {
     console.log(err);
     return (
@@ -27,8 +31,6 @@ const Home = async () => {
       </div>
     );
   }
-
-  const stringifyObject = (obj: any) => JSON.parse(JSON.stringify(obj));
 
   return (
     <>
@@ -45,7 +47,6 @@ const Home = async () => {
           <div className="flex flex-col gap-5">
             {allThreads.map((thread) => {
               const threadData = stringifyObject(thread);
-              console.log(thread.author.savedPosts);
               return (
                 <ThreadCard
                   key={threadData._id}
@@ -57,8 +58,8 @@ const Home = async () => {
                   createdAt={threadData.createdAt}
                   comments={threadData?.children}
                   isSaved={
-                    thread.author.savedPosts
-                      ? thread.author.savedPosts.includes(thread._id)
+                    currentUser.savedPosts
+                      ? currentUser.savedPosts.includes(thread._id)
                       : false
                   }
                 />

@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import User from "../models/user.model";
 import { connectToDB } from "../mongoose";
 import Thread from "../models/thread.model";
+import { Types } from "mongoose";
 
 export async function createUser(userData: object, path: string) {
   try {
@@ -89,24 +90,28 @@ export async function savePost(
       throw new Error("User not found");
     }
 
-    if (user.savedPosts && user.savedPosts.includes(postId)) {
+    const postObjectId = new Types.ObjectId(postId);
+
+    if (user.savedPosts && user.savedPosts.includes(postObjectId)) {
       await User.updateOne(
         { clerkId: userClerkId },
-        { $pull: { savedPosts: postId } }
+        { $pull: { savedPosts: postObjectId } }
       );
     } else {
+      console.log(true);
       await User.updateOne(
         { clerkId: userClerkId },
-        { $push: { savedPosts: postId } }
+        { $push: { savedPosts: postObjectId } }
       );
     }
 
     const updatedUser = await User.findOne({ clerkId: userClerkId });
+    console.log(updatedUser);
     revalidatePath(path);
     revalidatePath("/");
     return updatedUser.savedPosts;
   } catch (err: any) {
     console.log(err);
-    throw new Error("Error saving the post", err);
+    throw new Error("Error saving the post");
   }
 }

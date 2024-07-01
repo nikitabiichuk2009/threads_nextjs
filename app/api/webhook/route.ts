@@ -71,7 +71,6 @@ export async function POST(req: Request) {
         username: username,
         email: email_addresses[0].email_address,
         image: image_url,
-        savedPosts: [],
       },
       "/"
     );
