@@ -8,6 +8,8 @@ import { createUser, deleteUser, updateUser } from "@/lib/actions/user.action";
 export async function POST(req: Request) {
   // You can find this in the Clerk Dashboard -> Webhooks -> choose the endpoint
   const WEBHOOK_SECRET = process.env.NEXT_CLERK_WEBHOOK_SECRET;
+  // eslint-disable-next-line no-console
+  console.log(WEBHOOK_SECRET);
 
   if (!WEBHOOK_SECRET) {
     throw new Error(
