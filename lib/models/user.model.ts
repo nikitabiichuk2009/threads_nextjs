@@ -11,8 +11,8 @@ export interface IUser extends Document {
   portfolio?: string;
   joinDate: Date;
   threads: Schema.Types.ObjectId[];
-  savedPosts: Schema.Types.ObjectId[];
   communities: Schema.Types.ObjectId[];
+  savedPosts: Schema.Types.ObjectId[];
 }
 
 const UserSchema = new Schema({

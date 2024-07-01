@@ -13,10 +13,14 @@ const Home = async () => {
   let currentUser;
   try {
     const result = await fetchAllThreads();
-    const userResult = await getUserById(userId!);
+    if (!userId) {
+      currentUser = null;
+    } else {
+      const userResult = await getUserById(userId);
+      currentUser = stringifyObject(userResult);
+    }
     allThreads = result.allThreads;
     isNextPage = result.isNextPage;
-    currentUser = stringifyObject(userResult);
   } catch (err: any) {
     console.log(err);
     return (
@@ -31,7 +35,6 @@ const Home = async () => {
       </div>
     );
   }
-
   return (
     <>
       <h1 className="head-text text-white text-left">Home</h1>

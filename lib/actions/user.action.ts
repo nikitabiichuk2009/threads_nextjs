@@ -90,18 +90,25 @@ export async function savePost(
       throw new Error("User not found");
     }
 
+    // Ensure savedPosts is an array
+    if (!Array.isArray(user.savedPosts)) {
+      user.savedPosts = [];
+    }
+
     const postObjectId = new Types.ObjectId(postId);
 
-    if (user.savedPosts && user.savedPosts.includes(postObjectId)) {
+    if (user.savedPosts.includes(postObjectId)) {
       await User.updateOne(
         { clerkId: userClerkId },
         { $pull: { savedPosts: postObjectId } }
       );
     } else {
       console.log(true);
+      console.log(user.savedPosts);
+      console.log(postObjectId);
       await User.updateOne(
         { clerkId: userClerkId },
-        { $push: { savedPosts: postObjectId } }
+        { $addToSet: { savedPosts: postObjectId } }
       );
     }
 
