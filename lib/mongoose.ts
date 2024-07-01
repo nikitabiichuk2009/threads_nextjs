@@ -17,7 +17,7 @@ export const connectToDB = async () => {
 
   try {
     await mongoose.connect(process.env.MONGO_DB_URL, {
-      dbName: "Threads",
+      dbName: "threads_nextjs",
     });
     isConnected = true;
     console.log("DB is connected!");
