@@ -79,7 +79,8 @@ export async function getUserById(userId: string) {
 export async function savePost(
   userClerkId: string,
   postId: string,
-  path: string
+  path: string,
+  isSaved: boolean
 ) {
   try {
     await connectToDB();
@@ -89,7 +90,7 @@ export async function savePost(
     if (!user) {
       throw new Error("User not found");
     }
-
+    console.log(user);
     // Ensure savedPosts is an array
     if (!Array.isArray(user.savedPosts)) {
       user.savedPosts = [];
@@ -97,26 +98,24 @@ export async function savePost(
 
     const postObjectId = new Types.ObjectId(postId);
 
-    if (user.savedPosts.includes(postObjectId)) {
+    if (!isSaved) {
+      console.log(true);
+      // Add postObjectId to savedPosts
+      const userUpdated = await User.updateOne(
+        { clerkId: userClerkId },
+        { $addToSet: { savedPosts: postObjectId } } // Using $addToSet to prevent duplicates
+      );
+      console.log(userUpdated);
+    } else {
+      // Remove postObjectId from savedPosts
       await User.updateOne(
         { clerkId: userClerkId },
         { $pull: { savedPosts: postObjectId } }
       );
-    } else {
-      console.log(true);
-      console.log(user.savedPosts);
-      console.log(postObjectId);
-      await User.updateOne(
-        { clerkId: userClerkId },
-        { $addToSet: { savedPosts: postObjectId } }
-      );
     }
 
-    const updatedUser = await User.findOne({ clerkId: userClerkId });
-    console.log(updatedUser);
     revalidatePath(path);
     revalidatePath("/");
-    return updatedUser.savedPosts;
   } catch (err: any) {
     console.log(err);
     throw new Error("Error saving the post");

@@ -70,7 +70,7 @@ const ThreadCard: React.FC<ThreadCardProps> = ({
       redirect("/sign-in");
     }
     try {
-      await savePost(currentUserClerkId, id, `/thread/${id}`);
+      await savePost(currentUserClerkId, id, `/thread/${id}`, isSaved);
       toast({
         title: "Success",
         description: "Successfully saved a thread.",
