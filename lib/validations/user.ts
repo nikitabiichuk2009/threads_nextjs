@@ -27,3 +27,15 @@ export const userValidation = z.object({
       message: "Location must be at least 10 characters long",
     }),
 });
+
+export const threadValidation = z.object({
+  thread: z.string().min(3, { message: "Please use at least 3 characters." }),
+  accountId: z.string(),
+});
+
+export const CommentValidation = z.object({
+  comment: z
+    .string()
+    .min(3, { message: "Please use at least 3 characters." })
+    .max(200, { message: "Please use not more that 200 characters" }),
+});
