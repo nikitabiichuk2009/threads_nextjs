@@ -11,6 +11,7 @@ const isProtectedRoute = createRouteMatcher([
   "/create-thread",
   "/collection",
   "/profile",
+  "/activity",
 ]);
 const isPublicRoute = createRouteMatcher(publicRoutes);
 

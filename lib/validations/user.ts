@@ -29,7 +29,10 @@ export const userValidation = z.object({
 });
 
 export const threadValidation = z.object({
-  thread: z.string().min(3, { message: "Please use at least 3 characters." }),
+  thread: z
+    .string()
+    .min(7, { message: "Please use at least 7 characters." })
+    .max(1000, { message: "Please use not more that 1000 characters" }),
   accountId: z.string(),
 });
 

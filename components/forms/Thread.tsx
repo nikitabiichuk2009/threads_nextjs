@@ -96,7 +96,7 @@ const Thread = ({ userId }: { userId: string }) => {
           disabled={loading}
           className="mt-5 min-h-[46px] w-full bg-primary-500 px-4 py-3 font-semibold !text-light-1 transition-colors duration-300 ease-in-out hover:bg-purple-500 sm:w-fit"
         >
-          Submit
+          {loading ? "Submitting..." : "Submit"}
         </Button>
       </form>
     </Form>

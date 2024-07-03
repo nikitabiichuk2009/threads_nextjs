@@ -90,7 +90,6 @@ export async function savePost(
     if (!user) {
       throw new Error("User not found");
     }
-    console.log(user);
     // Ensure savedPosts is an array
     if (!Array.isArray(user.savedPosts)) {
       user.savedPosts = [];
@@ -116,8 +115,82 @@ export async function savePost(
 
     revalidatePath(path);
     revalidatePath("/");
+    revalidatePath("/activity");
   } catch (err: any) {
     console.log(err);
     throw new Error("Error saving the post");
+  }
+}
+
+export async function getSavedPostsByUser(userClerkId: string) {
+  try {
+    await connectToDB();
+
+    const user = await User.findOne({ clerkId: userClerkId }).populate(
+      "savedPosts"
+    );
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    const savedPosts = await Thread.find({
+      _id: { $in: user.savedPosts },
+    })
+      .populate({ path: "author", model: User })
+      .populate({ path: "children", populate: { path: "author", model: User } })
+      .exec();
+
+    return savedPosts;
+  } catch (err: any) {
+    console.error("Error fetching saved posts:", err);
+    throw new Error("Error fetching saved posts");
+  }
+}
+
+export async function likePost(
+  userClerkId: string,
+  postId: string,
+  path: string,
+  isLiked: boolean
+) {
+  try {
+    await connectToDB();
+
+    const user = await User.findOne({ clerkId: userClerkId });
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+    if (!Array.isArray(user.likedPosts)) {
+      user.likedPosts = [];
+    }
+
+    const postObjectId = new Types.ObjectId(postId);
+
+    if (!isLiked) {
+      const userUpdated = await User.updateOne(
+        { clerkId: userClerkId },
+        { $addToSet: { likedPosts: postObjectId } }
+      );
+      console.log(userUpdated);
+    } else {
+      await User.updateOne(
+        { clerkId: userClerkId },
+        { $pull: { likedPosts: postObjectId } }
+      );
+    }
+
+    await Thread.updateOne(
+      { _id: postObjectId },
+      { $inc: { likes: isLiked ? -1 : 1 } }
+    );
+
+    revalidatePath(path);
+    revalidatePath("/");
+    revalidatePath("/activity");
+  } catch (err: any) {
+    console.log(err);
+    throw new Error("Error liking the post");
   }
 }

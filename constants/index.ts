@@ -15,6 +15,11 @@ export const sidebarLinks = [
     label: "Activity",
   },
   {
+    imgURL: "/assets/star-gray.svg",
+    route: "/collection",
+    label: "Collection",
+  },
+  {
     imgURL: "/assets/create.svg",
     route: "/create-thread",
     label: "Create Thread",

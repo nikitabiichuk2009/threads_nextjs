@@ -13,6 +13,7 @@ export interface IUser extends Document {
   threads: Schema.Types.ObjectId[];
   communities: Schema.Types.ObjectId[];
   savedPosts: Schema.Types.ObjectId[];
+  likedPosts: Schema.Types.ObjectId[];
 }
 
 const UserSchema = new Schema({
@@ -28,6 +29,7 @@ const UserSchema = new Schema({
   threads: [{ type: Schema.Types.ObjectId, ref: "Thread" }],
   communities: [{ type: Schema.Types.ObjectId, ref: "Community" }],
   savedPosts: [{ type: Schema.Types.ObjectId, ref: "Thread" }],
+  likedPosts: [{ type: Schema.Types.ObjectId, ref: "Thread" }],
 });
 
 const User = models.User || model<IUser>("User", UserSchema);
