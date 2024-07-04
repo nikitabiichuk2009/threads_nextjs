@@ -62,34 +62,46 @@ const ProfilePage = async ({ params }: { params: { id: string } }) => {
         joinedDate={formattedDate}
       />
       <div className="mt-12">
-        <h3 className="text-light-1 text-heading3-bold">Created Threads</h3>
-        <div className="flex flex-col gap-5 mt-9">
-          {userPosts.map((threadData: any) => {
-            return (
-              <ThreadCard
-                key={threadData._id}
-                id={threadData._id}
-                currentUserClerkId={userId ? userId : ""}
-                content={threadData.text}
-                author={threadData.author}
-                community={threadData.community}
-                createdAt={threadData.createdAt}
-                comments={threadData?.children}
-                isComment={false}
-                likes={threadData.likes}
-                isSaved={
-                  currentUser?.savedPosts
-                    ? currentUser.savedPosts.includes(threadData._id)
-                    : false
-                }
-                isLiked={
-                  currentUser?.likedPosts
-                    ? currentUser.likedPosts.includes(threadData._id)
-                    : false
-                }
-              />
-            );
-          })}
+        <h3 className="text-light-1 text-heading3-bold">
+          Created Threads{" "}
+          <span className="bg-light-4 p-1">{userPosts.length}</span>
+        </h3>
+        <div className="flex flex-col gap-8 mt-9">
+          {userPosts.length > 0 ? (
+            userPosts.map((threadData: any) => {
+              return (
+                <ThreadCard
+                  key={threadData._id}
+                  id={threadData._id}
+                  currentUserClerkId={userId ? userId : ""}
+                  content={threadData.text}
+                  author={threadData.author}
+                  community={threadData.community}
+                  createdAt={threadData.createdAt}
+                  comments={threadData?.children}
+                  isComment={false}
+                  likes={threadData.likes}
+                  isSaved={
+                    currentUser?.savedPosts
+                      ? currentUser.savedPosts.includes(threadData._id)
+                      : false
+                  }
+                  isLiked={
+                    currentUser?.likedPosts
+                      ? currentUser.likedPosts.includes(threadData._id)
+                      : false
+                  }
+                />
+              );
+            })
+          ) : (
+            <NoResults
+              title="No threads found"
+              description="This user hasn't created any threads"
+              buttonTitle="Explore posts"
+              href="/"
+            />
+          )}
         </div>
       </div>
     </section>

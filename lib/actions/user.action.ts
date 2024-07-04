@@ -124,7 +124,15 @@ export async function savePost(
   }
 }
 
-export async function getSavedPostsByUser(userClerkId: string) {
+interface GetSavedPostsByUserParams {
+  userClerkId: string;
+  searchQuery?: string;
+}
+
+export async function getSavedPostsByUser({
+  userClerkId,
+  searchQuery = "",
+}: GetSavedPostsByUserParams) {
   try {
     await connectToDB();
 
@@ -136,9 +144,15 @@ export async function getSavedPostsByUser(userClerkId: string) {
       throw new Error("User not found");
     }
 
-    const savedPosts = await Thread.find({
+    const query: any = {
       _id: { $in: user.savedPosts },
-    })
+    };
+
+    if (searchQuery) {
+      query.$and = [{ text: { $regex: searchQuery, $options: "i" } }];
+    }
+
+    const savedPosts = await Thread.find(query)
       .populate({ path: "author", model: User })
       .populate({ path: "children", populate: { path: "author", model: User } })
       .exec();

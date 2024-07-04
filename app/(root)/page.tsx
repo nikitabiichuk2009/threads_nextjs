@@ -4,15 +4,17 @@ import NoResults from "@/components/shared/NoResults";
 import { auth } from "@clerk/nextjs/server";
 import ThreadCard from "@/components/cards/ThreadCard";
 import { getUserById } from "@/lib/actions/user.action";
-import { stringifyObject } from "@/lib/utils";
+import { SearchParamsProps, stringifyObject } from "@/lib/utils";
+import LocalSearchBar from "@/components/shared/LocalSearchBar";
 
-const Home = async () => {
+const Home = async ({ searchParams }: SearchParamsProps) => {
+  const searchQuery = searchParams ? searchParams.q : "";
   const { userId } = auth();
   let allThreads;
   let isNextPage;
   let currentUser;
   try {
-    const result = await fetchAllThreads();
+    const result = await fetchAllThreads({ searchQuery });
     if (!userId) {
       currentUser = null;
     } else {
@@ -37,17 +39,28 @@ const Home = async () => {
   }
   return (
     <>
-      <h1 className="head-text text-white text-left">Home</h1>
+      <h1 className="head-text text-white text-left mb-10">Home</h1>
+      <LocalSearchBar
+        searchFor="Search for threads"
+        iconPosition="left"
+        route="/"
+        imgSrc="/assets/search.svg"
+        otherClasses="flex-1"
+      />
       <section className="mt-9 flex flex-col gap-10">
         {allThreads.length === 0 ? (
           <NoResults
             title="No posts found"
-            description="There are no posts available."
+            description={
+              searchQuery
+                ? `No posts found matching your search "${searchQuery}". Try adjusting your search terms or explore other posts.`
+                : "No posts have been found. Start exploring the community or create a new post."
+            }
             buttonTitle="Create a post"
             href="/create-thread"
           />
         ) : (
-          <div className="flex flex-col gap-5">
+          <div className="flex flex-col gap-8">
             {allThreads.map((thread) => {
               const threadData = stringifyObject(thread);
               return (

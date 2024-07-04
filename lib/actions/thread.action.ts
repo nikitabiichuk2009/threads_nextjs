@@ -35,14 +35,30 @@ export async function createThread({
   }
 }
 
-export async function fetchAllThreads(pageNumber = 1, pageSize = 20) {
+interface FetchAllThreadsParams {
+  searchQuery?: string;
+  pageNumber?: number;
+  pageSize?: number;
+}
+
+export async function fetchAllThreads({
+  searchQuery = "",
+  pageNumber = 1,
+  pageSize = 20,
+}: FetchAllThreadsParams) {
   try {
     await connectToDB();
     const skip = (pageNumber - 1) * pageSize;
 
-    const allThreads = await Thread.find({
+    const query: any = {
       $or: [{ parentId: null }, { parentId: { $exists: false } }],
-    })
+    };
+
+    if (searchQuery) {
+      query.$and = [{ text: { $regex: searchQuery, $options: "i" } }];
+    }
+
+    const allThreads = await Thread.find(query)
       .sort({ createdAt: "desc" })
       .skip(skip)
       .limit(pageSize)
@@ -55,10 +71,10 @@ export async function fetchAllThreads(pageNumber = 1, pageSize = 20) {
         },
       })
       .exec();
-    const totalPostsCount = await Thread.countDocuments({
-      $or: [{ parentId: null }, { parentId: { $exists: false } }],
-    });
+
+    const totalPostsCount = await Thread.countDocuments(query);
     const isNextPage = totalPostsCount > skip + allThreads.length;
+
     return { allThreads, isNextPage };
   } catch (err: any) {
     console.log(err);

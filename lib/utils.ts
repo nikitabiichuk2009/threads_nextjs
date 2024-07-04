@@ -81,3 +81,7 @@ export const removeKeysFromQuery = ({
 };
 
 export const stringifyObject = (obj: any) => JSON.parse(JSON.stringify(obj));
+
+export interface SearchParamsProps {
+  searchParams: { [key: string]: string | undefined };
+}
