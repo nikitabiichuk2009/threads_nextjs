@@ -38,7 +38,6 @@ const Comment = ({ threadId, currentUserId, currentUserImg }: Props) => {
     },
   });
   async function onSubmit(values: z.infer<typeof CommentValidation>) {
-    setLoading(true);
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
     console.log(values);
@@ -47,11 +46,10 @@ const Comment = ({ threadId, currentUserId, currentUserImg }: Props) => {
         title: "You need to log in to create a comment.",
         className: "bg-blue text-white border-none",
       });
-      setTimeout(() => {
-        router.push("/sign-in");
-      }, 3000);
       return;
     }
+    setLoading(true);
+
     try {
       await addCommentToThread(
         threadId,
@@ -97,7 +95,7 @@ const Comment = ({ threadId, currentUserId, currentUserImg }: Props) => {
               <FormLabel>
                 <div className="relative size-12">
                   <Image
-                    src={currentUserImg}
+                    src={currentUserImg || "/assets/user.svg"}
                     alt="profile image"
                     layout="fill"
                     className="rounded-full object-cover"

@@ -132,3 +132,66 @@ export async function addCommentToThread(
     throw new Error("Error commenting", err);
   }
 }
+
+export async function deleteThreadFromDB(threadId: string, path: string) {
+  try {
+    await connectToDB();
+
+    // Find the thread and its related threads (children)
+    const threadToDelete = await Thread.findById(threadId);
+
+    if (!threadToDelete) {
+      throw new Error("Thread not found");
+    }
+
+    // Recursive function to delete all child threads
+    const deleteChildren = async (threadId: Types.ObjectId) => {
+      const children = await Thread.find({ parentId: threadId });
+      for (const child of children) {
+        await deleteChildren(child._id);
+      }
+      await Thread.findByIdAndDelete(threadId);
+    };
+
+    // Delete the main thread and its children
+    await deleteChildren(threadToDelete._id);
+
+    revalidatePath(path);
+    revalidatePath("/");
+  } catch (err: any) {
+    console.log(err);
+    throw new Error("Error deleting the thread", err);
+  }
+}
+
+interface EditThreadParams {
+  threadId: string;
+  newText: string;
+  path: string;
+}
+
+export async function editThreadContent({
+  threadId,
+  newText,
+  path,
+}: EditThreadParams) {
+  try {
+    await connectToDB();
+
+    // Find the thread by ID and update its content
+    const updatedThread = await Thread.findByIdAndUpdate(
+      threadId,
+      { text: newText },
+      { new: true }
+    );
+
+    if (!updatedThread) {
+      throw new Error("Thread not found");
+    }
+
+    revalidatePath(path);
+  } catch (err: any) {
+    console.log(err);
+    throw new Error("Error editing the thread content", err);
+  }
+}

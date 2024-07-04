@@ -5,6 +5,8 @@ import User from "../models/user.model";
 import { connectToDB } from "../mongoose";
 import Thread from "../models/thread.model";
 import { Types } from "mongoose";
+import { SortOrder } from "mongoose";
+import { FilterQuery } from "mongoose";
 
 export async function createUser(userData: object, path: string) {
   try {
@@ -192,5 +194,68 @@ export async function likePost(
   } catch (err: any) {
     console.log(err);
     throw new Error("Error liking the post");
+  }
+}
+
+export async function getPostsByUser(userClerkId: string) {
+  try {
+    await connectToDB();
+
+    const user = await User.findOne({ clerkId: userClerkId });
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    const userPosts = await Thread.find({
+      author: user._id,
+      $or: [{ parentId: null }, { parentId: { $exists: false } }],
+    })
+      .populate({ path: "author", model: User })
+      .populate({ path: "children", populate: { path: "author", model: User } })
+      .exec();
+
+    return userPosts;
+  } catch (err: any) {
+    console.error("Error fetching user posts:", err);
+    throw new Error("Error fetching user posts");
+  }
+}
+
+interface GetAllUsersParams {
+  searchQuery?: string;
+  page?: number;
+  pageSize?: number;
+}
+
+export async function getAllUsers(params: GetAllUsersParams) {
+  try {
+    await connectToDB();
+    const { searchQuery, page = 1, pageSize = 20 } = params;
+    const skip = (page - 1) * pageSize;
+
+    const query: FilterQuery<typeof User> = {};
+    if (searchQuery) {
+      query.$or = [
+        { name: { $regex: searchQuery, $options: "i" } },
+        { username: { $regex: searchQuery, $options: "i" } },
+      ];
+    }
+
+    const sortOption: { [key: string]: SortOrder } = { joinDate: -1 }; // Sort by newest
+
+    const users = await User.find(query)
+      .sort(sortOption)
+      .skip(skip)
+      .limit(pageSize)
+      .exec();
+
+    const totalUsersCount = await User.countDocuments(query);
+    const hasNextPage = totalUsersCount > skip + users.length;
+
+    return { users, isNext: hasNextPage };
+  } catch (err) {
+    console.error("Error fetching users:", err);
+    throw new Error("Error fetching users");
   }
 }

@@ -4,9 +4,9 @@ import { auth } from "@clerk/nextjs/server";
 import ThreadCard from "@/components/cards/ThreadCard";
 import { getSavedPostsByUser, getUserById } from "@/lib/actions/user.action";
 import { redirect } from "next/navigation";
+import { stringifyObject } from "@/lib/utils";
 
 const Collection = async () => {
-  const stringifyObject = (obj: any) => JSON.parse(JSON.stringify(obj));
   const { userId } = auth();
   if (!userId) {
     redirect("/sign-in");
@@ -24,7 +24,7 @@ const Collection = async () => {
     console.log(err);
     return (
       <div>
-        <h1 className="head-text">Error occurred</h1>
+        <h1 className="head-text text-light-1">Error occurred</h1>
         <NoResults
           title="Error loading saved posts"
           description="Failed to load saved posts. Please try reloading the page, pressing the button, or trying again later."
@@ -38,7 +38,7 @@ const Collection = async () => {
   return (
     <>
       <h1 className="head-text text-white text-left">Collection</h1>
-      <section className="mt-9 flex flex-col gap-10">
+      <section className="mt-9 flex flex-col gap-5">
         {savedThreads.length === 0 ? (
           <NoResults
             title="No saved posts found"

@@ -1,10 +1,22 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
-import React, { useState } from "react";
+import React from "react";
 import { useToast } from "../ui/use-toast";
 import { likePost, savePost } from "@/lib/actions/user.action";
-import { redirect, usePathname, useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "../ui/alert-dialog";
+import { deleteThreadFromDB } from "@/lib/actions/thread.action";
 
 interface ThreadCardProps {
   id: string;
@@ -72,9 +84,6 @@ const ThreadCard: React.FC<ThreadCardProps> = ({
         title: "You need to log in to save a thread.",
         className: "bg-blue text-white border-none",
       });
-      setTimeout(() => {
-        router.push("/sign-in");
-      }, 3000);
       return;
     }
     try {
@@ -104,9 +113,6 @@ const ThreadCard: React.FC<ThreadCardProps> = ({
         title: "You need to log in to like a thread.",
         className: "bg-blue text-white border-none",
       });
-      setTimeout(() => {
-        router.push("/sign-in");
-      }, 3000);
       return;
     }
     try {
@@ -125,6 +131,29 @@ const ThreadCard: React.FC<ThreadCardProps> = ({
       toast({
         title: "Error",
         description: "Failed to like a thread.",
+        className: "bg-red-500 text-white border-none",
+      });
+    }
+  };
+
+  const deleteThread = async () => {
+    if (!isComment) router.push("/");
+    try {
+      await deleteThreadFromDB(id, pathName);
+      toast({
+        title: "Success",
+        description: `${
+          !isComment
+            ? "Successfully deleted a thread."
+            : "Successfully deleted a comment."
+        }`,
+        className: "bg-green-500 text-white border-none",
+      });
+    } catch (err) {
+      console.error("Failed to save post: ", err);
+      toast({
+        title: "Error",
+        description: `Failed to delete a ${!isComment ? "thread" : "comment"}.`,
         className: "bg-red-500 text-white border-none",
       });
     }
@@ -162,10 +191,12 @@ const ThreadCard: React.FC<ThreadCardProps> = ({
                 {author.name}
               </h4>
             </Link>
-            <p className="mt-2 text-small-regular text-light-2">{content}</p>
+            <p className="mt-2 text-small-regular text-light-2 line-clamp-5">
+              {content}
+            </p>
             <div className="mt-5 flex flex-col gap-3">
               <div className="flex justify-between">
-                <div className="flex flex-row gap-3.5 items-center justify-cente">
+                <div className="flex flex-row gap-3.5 items-center justify-center">
                   <div className="flex flex-row gap-1 mt-[1px]">
                     <p className="text-light-1">{likes}</p>
                     <Image
@@ -210,6 +241,52 @@ const ThreadCard: React.FC<ThreadCardProps> = ({
                     width={24}
                     height={24}
                   />
+                  {currentUserClerkId === author.clerkId && (
+                    <AlertDialog>
+                      <AlertDialogTrigger>
+                        <Image
+                          src={"/assets/delete.svg"}
+                          width={20}
+                          height={20}
+                          className="cursor-pointer object-contain"
+                          alt="delete"
+                        />
+                      </AlertDialogTrigger>
+                      <AlertDialogContent className="bg-dark-2 border-none">
+                        <AlertDialogHeader>
+                          <AlertDialogTitle className="text-light-1">
+                            Are you absolutely sure?
+                          </AlertDialogTitle>
+                          <AlertDialogDescription className="font-spaceGrotesk text-[14px] font-normal leading-[19.6px] text-gray-1">
+                            This action cannot be undone. This will permanently
+                            delete your {isComment ? "comment" : "thread"}.
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel className="mb-2 me-2 rounded-lg border-none px-5 py-2.5 text-sm font-medium transition-colors duration-300 ease-out hover:text-blue-700 focus:outline-none  bg-gray-800 text-gray-400  hover:bg-gray-700 hover:text-white">
+                            Cancel
+                          </AlertDialogCancel>
+                          <AlertDialogAction
+                            onClick={deleteThread}
+                            className="bg-primary-500 px-4 py-3 font-semibold !text-light-1 shadow-md transition-colors duration-300 ease-out hover:bg-purple-500"
+                          >
+                            Continue
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
+                  )}
+                  {currentUserClerkId === author.clerkId && (
+                    <Link href={`/thread/${id}/edit`}>
+                      <Image
+                        src={"/assets/edit.svg"}
+                        alt="edit"
+                        width={20}
+                        height={20}
+                        className="cursor-pointer object-contain"
+                      />
+                    </Link>
+                  )}
                 </div>
                 {!isComment && pathName !== `/thread/${id}` && (
                   <Link href={`/thread/${id}`}>

@@ -79,3 +79,5 @@ export const removeKeysFromQuery = ({
     { skipNull: true }
   );
 };
+
+export const stringifyObject = (obj: any) => JSON.parse(JSON.stringify(obj));

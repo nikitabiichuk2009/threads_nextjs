@@ -35,7 +35,7 @@ const NoResults = ({
       ) : (
         <Button
           onClick={buttonAction}
-          className="mt-5 min-h-[46px] w-full bg-primary-500 px-4 py-3 font-semibold !text-light-900 shadow-md transition-colors duration-300 ease-out hover:bg-[#FF6000] dark:shadow-none sm:w-fit"
+          className="mt-5 min-h-[46px] w-full bg-primary-500 px-4 py-3 font-semibold !text-light-1 transition-colors duration-300 ease-in-out hover:bg-purple-500 sm:w-fit"
         >
           {buttonTitle}
         </Button>

@@ -1,14 +1,12 @@
 import ThreadCard from "@/components/cards/ThreadCard";
 import Comment from "@/components/forms/Comment";
 import NoResults from "@/components/shared/NoResults";
-import { Button } from "@/components/ui/button";
 import { fetchThreadById } from "@/lib/actions/thread.action";
 import { getUserById } from "@/lib/actions/user.action";
+import { stringifyObject } from "@/lib/utils";
 import { auth } from "@clerk/nextjs/server";
 import Link from "next/link";
 import React from "react";
-
-const stringifyObject = (obj: any) => JSON.parse(JSON.stringify(obj));
 
 const Thread = async ({ params }: { params: { id: string } }) => {
   if (!params.id) return null;
@@ -28,7 +26,7 @@ const Thread = async ({ params }: { params: { id: string } }) => {
     console.log(err);
     return (
       <div>
-        <h1 className="head-text">Error occurred</h1>
+        <h1 className="head-text text-light-1">Error occurred</h1>
         <NoResults
           title="Error loading current user or thread"
           description="Failed to recognize current user or loading a thread. Please try reloading the page, pressing the button or trying again later."
@@ -75,8 +73,8 @@ const Thread = async ({ params }: { params: { id: string } }) => {
       <div className="mt-9">
         <Comment
           threadId={threadData._id}
-          currentUserImg={currentUser.image}
-          currentUserId={currentUser._id}
+          currentUserImg={currentUser?.image || ""}
+          currentUserId={currentUser?._id || ""}
         />
       </div>
       <div className="mt-10 flex flex-col gap-6">

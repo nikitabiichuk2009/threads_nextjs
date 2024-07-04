@@ -14,12 +14,23 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Textarea } from "../ui/textarea";
-import { createThread } from "@/lib/actions/thread.action";
+import { createThread, editThreadContent } from "@/lib/actions/thread.action";
 import { useRouter } from "next/navigation";
 import NoResults from "../shared/NoResults";
 import { useToast } from "../ui/use-toast";
 
-const Thread = ({ userId }: { userId: string }) => {
+const Thread = ({
+  userId,
+  initialValues,
+  type,
+}: {
+  userId: string;
+  type: string;
+  initialValues: {
+    id: string;
+    text: string;
+  };
+}) => {
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
@@ -27,7 +38,7 @@ const Thread = ({ userId }: { userId: string }) => {
   const form = useForm<z.infer<typeof threadValidation>>({
     resolver: zodResolver(threadValidation),
     defaultValues: {
-      thread: "",
+      thread: initialValues?.text ? initialValues.text : "",
       accountId: userId,
     },
   });
@@ -36,27 +47,53 @@ const Thread = ({ userId }: { userId: string }) => {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
     console.log(values);
-    try {
-      await createThread({
-        text: values.thread,
-        author: userId,
-        path: "/",
-        communityId: null,
-      });
-      router.push("/");
-      toast({
-        title: "Successfully created a thread.",
-        className: "bg-green-500 text-white border-none",
-      });
-      setLoading(false);
-    } catch (err) {
-      console.log(err);
-      toast({
-        title: "Failed to create a thread",
-        className: "bg-red-500 text-white border-none",
-      });
-      setError(true);
-      setLoading(false);
+    if (type === "edit") {
+      try {
+        await editThreadContent({
+          threadId: initialValues.id,
+          newText: values.thread,
+          path: "/",
+        });
+        router.push("/");
+        toast({
+          title: `Successfully edited a thread.`,
+          className: "bg-green-500 text-white border-none",
+        });
+        setLoading(false);
+        return;
+      } catch (err) {
+        console.log(err);
+        toast({
+          title: `Failed to edit a thread`,
+          className: "bg-red-500 text-white border-none",
+        });
+        setError(true);
+        setLoading(false);
+      }
+    } else {
+      try {
+        await createThread({
+          text: values.thread,
+          author: userId,
+          path: "/",
+          communityId: null,
+        });
+        router.push("/");
+        toast({
+          title: `Successfully created a thread.`,
+          className: "bg-green-500 text-white border-none",
+        });
+        setLoading(false);
+        return;
+      } catch (err) {
+        console.log(err);
+        toast({
+          title: `Failed to create a thread`,
+          className: "bg-red-500 text-white border-none",
+        });
+        setError(true);
+        setLoading(false);
+      }
     }
   }
 
@@ -64,7 +101,9 @@ const Thread = ({ userId }: { userId: string }) => {
     return (
       <NoResults
         title="Error occurred"
-        description="There was an error while creating a thread. Please try reloading the page, pressing the button or trying again later."
+        description={`There was an error while ${
+          type === "edit" ? "editing" : "creating"
+        } a thread. Please try reloading the page, pressing the button or trying again later.`}
         buttonTitle="Go back"
         href="/"
       />

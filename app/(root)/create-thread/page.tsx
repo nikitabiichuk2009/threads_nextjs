@@ -17,7 +17,7 @@ const CreateThread = async () => {
     console.log(err);
     return (
       <div>
-        <h1 className="head-text">Error occurred</h1>
+        <h1 className="head-text text-light-1">Error occurred</h1>
         <NoResults
           title="Error loading user"
           description="Failed to load user information. Please try reloading the page, pressing the button or trying again later.."
@@ -30,8 +30,8 @@ const CreateThread = async () => {
   // console.log(mongoUser);
   return (
     <>
-      <h1 className="head-text">Create Thread</h1>
-      <Thread userId={mongoUser._id} />
+      <h1 className="head-text text-light-1">Create Thread</h1>
+      <Thread userId={mongoUser._id ? mongoUser._id : ""} />
     </>
   );
 };

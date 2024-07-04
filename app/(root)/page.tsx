@@ -4,9 +4,9 @@ import NoResults from "@/components/shared/NoResults";
 import { auth } from "@clerk/nextjs/server";
 import ThreadCard from "@/components/cards/ThreadCard";
 import { getUserById } from "@/lib/actions/user.action";
+import { stringifyObject } from "@/lib/utils";
 
 const Home = async () => {
-  const stringifyObject = (obj: any) => JSON.parse(JSON.stringify(obj));
   const { userId } = auth();
   let allThreads;
   let isNextPage;
@@ -25,7 +25,7 @@ const Home = async () => {
     console.log(err);
     return (
       <div>
-        <h1 className="head-text">Error occurred</h1>
+        <h1 className="head-text text-light-1">Error occurred</h1>
         <NoResults
           title="Error loading posts or current logged user"
           description="Failed to load posts or current logged user. Please try reloading the page, pressing the button or trying again later."
