@@ -103,6 +103,7 @@ export async function fetchThreadById(threadId: string) {
 
     const thread = await Thread.findById(threadId)
       .populate({ path: "author", model: User })
+      .populate({ path: "community", model: Community })
       .populate({
         path: "children",
         populate: [
