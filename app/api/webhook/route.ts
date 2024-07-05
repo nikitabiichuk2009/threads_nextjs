@@ -226,8 +226,8 @@ export async function POST(req: Request) {
       // Show what evnt?.data sends from above resource
       const { id } = evt?.data;
       console.log("deleted", evt?.data);
-
-      await deleteCommunity(id!);
+      // @ts-ignore
+      await deleteCommunity(id);
 
       return NextResponse.json(
         { message: "Organization deleted" },

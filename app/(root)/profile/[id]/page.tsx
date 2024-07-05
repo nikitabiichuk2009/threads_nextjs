@@ -2,19 +2,9 @@ import ThreadCard from "@/components/cards/ThreadCard";
 import NoResults from "@/components/shared/NoResults";
 import ProfileHeader from "@/components/shared/ProfileHeader";
 import { getPostsByUser, getUserById } from "@/lib/actions/user.action";
-import { stringifyObject } from "@/lib/utils";
+import { formatDate, stringifyObject } from "@/lib/utils";
 import { auth } from "@clerk/nextjs/server";
 import React from "react";
-
-const formatDate = (dateString: string) => {
-  const date = new Date(dateString);
-  const options: Intl.DateTimeFormatOptions = {
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  };
-  return date.toLocaleDateString("en-US", options);
-};
 
 const ProfilePage = async ({ params }: { params: { id: string } }) => {
   let user;

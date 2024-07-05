@@ -17,6 +17,7 @@ import {
   AlertDialogTrigger,
 } from "../ui/alert-dialog";
 import { deleteThreadFromDB } from "@/lib/actions/thread.action";
+import { formatDate } from "@/lib/utils";
 
 interface ThreadCardProps {
   id: string;
@@ -309,6 +310,30 @@ const ThreadCard: React.FC<ThreadCardProps> = ({
                   </p>
                 </Link>
               )}
+              <div className="flex flex-row items-center gap-2">
+                <p className="text-small-medium text-gray-1">
+                  {formatDate(createdAt)}
+                </p>
+
+                {!isComment && !parentId && community && (
+                  <Link
+                    href={`/communities/${community.id}`}
+                    className="flex items-center gap-2"
+                  >
+                    <p className="text-small-medium text-gray-1">
+                      - {community.name} Community
+                    </p>
+                    <div className="relative size-8">
+                      <Image
+                        src={community.image}
+                        alt="community image"
+                        layout="fill"
+                        className="rounded-full object-cover"
+                      />
+                    </div>
+                  </Link>
+                )}
+              </div>
             </div>
           </div>
         </div>

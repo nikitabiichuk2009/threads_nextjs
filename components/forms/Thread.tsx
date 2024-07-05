@@ -18,6 +18,7 @@ import { createThread, editThreadContent } from "@/lib/actions/thread.action";
 import { useRouter } from "next/navigation";
 import NoResults from "../shared/NoResults";
 import { useToast } from "../ui/use-toast";
+import { useOrganization } from "@clerk/nextjs";
 
 const Thread = ({
   userId,
@@ -31,6 +32,7 @@ const Thread = ({
     text: string;
   };
 }) => {
+  const { organization } = useOrganization();
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
@@ -76,7 +78,7 @@ const Thread = ({
           text: values.thread,
           author: userId,
           path: "/",
-          communityId: null,
+          communityId: organization ? organization.id : null,
         });
         router.push("/");
         toast({
