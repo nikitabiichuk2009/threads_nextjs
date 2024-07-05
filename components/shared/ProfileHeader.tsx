@@ -20,7 +20,7 @@ interface ProfileHeaderProps {
   type: string;
   creator?: string;
   usersEmail?: string;
-  notMember?: boolean;
+  isMember?: boolean;
 }
 
 const ProfileHeader: React.FC<ProfileHeaderProps> = ({
@@ -36,9 +36,10 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
   location,
   joinedDate,
   type,
-  notMember,
+  isMember,
 }) => {
   const { toast } = useToast();
+  console.log(isMember);
   const [isSending, setIsSending] = useState(false);
   const handleAskJoin = async () => {
     if (!usersEmail) {
@@ -79,7 +80,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
             />
           </div>
           <div className="flex-1">
-            <h2 className="text-left text-heading2-bold text-light-1">
+            <h2 className="text-left text-heading3-bold sm:text-heading2-bold text-light-1">
               {name}
             </h2>
             <p className="text-base-medium text-gray-1">@{username}</p>
@@ -89,6 +90,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
           {accounClerkId === userIdView && type === "User" && (
             <Link
               href={`/profile/${accounClerkId}/edit`}
+              className="max-md:w-full"
             >
               <Button className="mt-8 md:mt-0 min-h-[46px] w-full md:w-auto md:min-w-[175px] bg-primary-500 font-semibold !text-light-1 shadow-md transition-colors duration-300 ease-out hover:bg-purple-500">
                 Edit profile
@@ -96,11 +98,11 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
             </Link>
           )}
         </SignedIn>
-        {type !== "User" && creator !== usersEmail && notMember && (
+        {type !== "User" && !isMember && (
           <Button
             onClick={handleAskJoin}
             disabled={isSending}
-            className="mt-8 md:mt-0 min-h-[46px] w-fit md:w-auto md:min-w-[175px] bg-primary-500 font-semibold !text-light-1 shadow-md transition-colors duration-300 ease-out hover:bg-purple-500"
+            className="mt-8 md:mt-0 min-h-[46px] w-full md:w-auto md:min-w-[175px] bg-primary-500 font-semibold !text-light-1 shadow-md transition-colors duration-300 ease-out hover:bg-purple-500"
           >
             Ask to join
           </Button>

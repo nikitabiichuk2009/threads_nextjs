@@ -40,6 +40,11 @@ const CommunityDetails = async ({ params }: { params: { id: string } }) => {
       </div>
     );
   }
+
+  const isMember = currentUser?._id
+    ? community.members.some((member: any) => member._id === currentUser._id)
+    : false;
+
   return (
     <section>
       <ProfileHeader
@@ -50,11 +55,7 @@ const CommunityDetails = async ({ params }: { params: { id: string } }) => {
         joinedDate={formattedDate}
         creator={community.createdBy.email}
         usersEmail={currentUser?.email ? currentUser?.email : ""}
-        notMember={
-          currentUser?._id
-            ? !community.members.includes(currentUser?._id)
-            : true
-        }
+        isMember={isMember}
         type="Community"
       />
       <div className="mt-9">
