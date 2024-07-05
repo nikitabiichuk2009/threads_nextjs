@@ -31,7 +31,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
 }) => {
   return (
     <div className="flex w-full flex-col justify-start">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between flex-col md:flex-row gap-4 md:gap-0">
         <div className="flex items-center gap-6">
           <div className="relative size-32 md:size-40">
             <Image
@@ -51,7 +51,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
         <SignedIn>
           {accounClerkId === userIdView && (
             <Link href={`/profile/${accounClerkId}/edit`}>
-              <Button className="min-h-[46px] sm:w-fit md:min-w-[175px] bg-primary-500  font-semibold !text-light-1 shadow-md transition-colors duration-300 ease-out hover:bg-purple-500">
+              <Button className="mt-8 md:mt-0 min-h-[46px] w-full md:w-auto md:min-w-[175px] bg-primary-500 font-semibold !text-light-1 shadow-md transition-colors duration-300 ease-out hover:bg-purple-500">
                 Edit profile
               </Button>
             </Link>

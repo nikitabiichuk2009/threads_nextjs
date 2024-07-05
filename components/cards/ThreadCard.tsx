@@ -167,7 +167,7 @@ const ThreadCard: React.FC<ThreadCardProps> = ({
       }`}
     >
       {currentUserClerkId === author.clerkId && (
-        <div className="flex flex-row mb-6 gap-3.5">
+        <div className="flex flex-row mb-4 md:mb-8 gap-3.5">
           <Link href={`/thread/${id}/edit`}>
             <Image
               src={"/assets/edit.svg"}
@@ -212,7 +212,26 @@ const ThreadCard: React.FC<ThreadCardProps> = ({
           </AlertDialog>
         </div>
       )}
-
+      {!isComment && !parentId && community && (
+        <div className="md:hidden mb-6">
+          <Link
+            href={`/community/${community.id}`}
+            className="flex items-center gap-2"
+          >
+            <p className="text-subtle-medium sm:text-small-medium text-gray-1">
+              {community.name} Community
+            </p>
+            <div className="relative size-8">
+              <Image
+                src={community.image}
+                alt="community image"
+                layout="fill"
+                className="rounded-full object-cover"
+              />
+            </div>
+          </Link>
+        </div>
+      )}
       <div className="flex items-start justify-between">
         <div className="flex w-full flex-1 flex-row gap-4">
           <div className="flex flex-col items-center">
@@ -317,22 +336,24 @@ const ThreadCard: React.FC<ThreadCardProps> = ({
                 </p>
 
                 {!isComment && !parentId && community && (
-                  <Link
-                    href={`/community/${community.id}`}
-                    className="flex items-center gap-2"
-                  >
-                    <p className="text-subtle-medium sm:text-small-medium text-gray-1">
-                      - {community.name} Community
-                    </p>
-                    <div className="relative size-8">
-                      <Image
-                        src={community.image}
-                        alt="community image"
-                        layout="fill"
-                        className="rounded-full object-cover"
-                      />
-                    </div>
-                  </Link>
+                  <div className="hidden md:block">
+                    <Link
+                      href={`/community/${community.id}`}
+                      className="flex items-center gap-2"
+                    >
+                      <p className="text-subtle-medium sm:text-small-medium text-gray-1">
+                        - {community.name} Community
+                      </p>
+                      <div className="relative size-8">
+                        <Image
+                          src={community.image}
+                          alt="community image"
+                          layout="fill"
+                          className="rounded-full object-cover"
+                        />
+                      </div>
+                    </Link>
+                  </div>
                 )}
               </div>
             </div>
