@@ -18,23 +18,34 @@ import NoResults from "../shared/NoResults";
 import { useToast } from "../ui/use-toast";
 import Image from "next/image";
 import { Input } from "../ui/input";
-import { addCommentToThread } from "@/lib/actions/thread.action";
+import {
+  addCommentToThread,
+  editThreadContent,
+} from "@/lib/actions/thread.action";
 
 interface Props {
   threadId: string;
   currentUserId: string;
   currentUserImg: string;
+  initialValues: { text: string };
+  type: string;
 }
-const Comment = ({ threadId, currentUserId, currentUserImg }: Props) => {
+const Comment = ({
+  threadId,
+  currentUserId,
+  currentUserImg,
+  initialValues,
+  type,
+}: Props) => {
   const [error, setError] = useState(false);
   const pathName = usePathname();
+  const router = useRouter();
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
-  const router = useRouter();
   const form = useForm<z.infer<typeof CommentValidation>>({
     resolver: zodResolver(CommentValidation),
     defaultValues: {
-      comment: "",
+      comment: initialValues.text,
     },
   });
   async function onSubmit(values: z.infer<typeof CommentValidation>) {
@@ -43,33 +54,59 @@ const Comment = ({ threadId, currentUserId, currentUserImg }: Props) => {
     console.log(values);
     if (!currentUserId || !currentUserImg) {
       toast({
-        title: "You need to log in to create a comment.",
+        title: `You need to log in to ${
+          type === "edit" ? "edit" : "create"
+        } a comment.`,
         className: "bg-blue text-white border-none",
       });
       return;
     }
     setLoading(true);
 
-    try {
-      await addCommentToThread(
-        threadId,
-        values.comment,
-        currentUserId,
-        pathName
-      );
-      setLoading(false);
-      toast({
-        title: "Successfully created a comment.",
-        className: "bg-green-500 text-white border-none",
-      });
-      form.reset();
-    } catch (err) {
-      setError(true);
-      setLoading(false);
-      toast({
-        title: "Failed to create a comment.",
-        className: "bg-red-500 text-white border-none",
-      });
+    if (type === "edit") {
+      try {
+        await editThreadContent({
+          threadId,
+          newText: values.comment,
+          path: `/thread/${threadId}`,
+        });
+        setLoading(false);
+        router.push(`/thread/${threadId}`);
+        toast({
+          title: "Successfully edited a comment.",
+          className: "bg-green-500 text-white border-none",
+        });
+        form.reset();
+      } catch (err) {
+        setError(true);
+        setLoading(false);
+        toast({
+          title: "Failed to edite a comment.",
+          className: "bg-red-500 text-white border-none",
+        });
+      }
+    } else {
+      try {
+        await addCommentToThread(
+          threadId,
+          values.comment,
+          currentUserId,
+          pathName
+        );
+        setLoading(false);
+        toast({
+          title: "Successfully created a comment.",
+          className: "bg-green-500 text-white border-none",
+        });
+        form.reset();
+      } catch (err) {
+        setError(true);
+        setLoading(false);
+        toast({
+          title: "Failed to create a comment.",
+          className: "bg-red-500 text-white border-none",
+        });
+      }
     }
   }
 

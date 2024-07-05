@@ -1,3 +1,4 @@
+import Comment from "@/components/forms/Comment";
 import Thread from "@/components/forms/Thread";
 import NoResults from "@/components/shared/NoResults";
 import { fetchThreadById } from "@/lib/actions/thread.action";
@@ -13,19 +14,19 @@ const Page = async ({ params }: any) => {
     const result = await fetchThreadById(params.id);
     thread = JSON.parse(JSON.stringify(result));
     console.log(thread.parentId);
-    if (thread.parentId) {
-      return (
-        <div>
-          <h1 className="head-text text-light-1">Error</h1>
-          <NoResults
-            title="You are not able to edit a comment"
-            description="You can't edit comments in our app"
-            buttonTitle="Go back"
-            href="/"
-          />
-        </div>
-      );
-    }
+    // if (thread.parentId) {
+    //   return (
+    //     <div>
+    //       <h1 className="head-text text-light-1">Error</h1>
+    //       <NoResults
+    //         title="You are not able to edit a comment"
+    //         description="You can't edit comments in our app"
+    //         buttonTitle="Go back"
+    //         href="/"
+    //       />
+    //     </div>
+    //   );
+    // }
     if (!userId) {
       return (
         <div>
@@ -79,11 +80,21 @@ const Page = async ({ params }: any) => {
     <div>
       <h1 className="head-text text-light-1">Edit a Thread</h1>
       <div className="mt-9">
-        <Thread
-          initialValues={initialValues}
-          type="edit"
-          userId={thread.author._id}
-        />
+        {!thread.parentId ? (
+          <Thread
+            initialValues={initialValues}
+            type="edit"
+            userId={thread.author._id}
+          />
+        ) : (
+          <Comment
+            threadId={thread._id}
+            initialValues={{ text: thread.text }}
+            type="edit"
+            currentUserImg={thread.author.image}
+            currentUserId={thread.author._id}
+          />
+        )}
       </div>
     </div>
   );

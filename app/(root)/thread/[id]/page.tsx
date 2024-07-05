@@ -76,9 +76,11 @@ const Thread = async ({ params }: { params: { id: string } }) => {
           threadId={threadData._id}
           currentUserImg={currentUser?.image || ""}
           currentUserId={currentUser?._id || ""}
+          type="create"
+          initialValues={{ text: "" }}
         />
       </div>
-      <div className="mt-10 flex flex-col gap-6">
+      <div className="mt-10 flex flex-col gap-8">
         {threadData.children.map((childItem: any) => {
           return (
             <ThreadCard

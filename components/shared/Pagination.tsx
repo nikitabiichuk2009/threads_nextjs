@@ -38,7 +38,7 @@ const Pagination = ({
       <Button
         disabled={pageNumber === 1 || isDisabled}
         onClick={() => handleNavigation("prev")}
-        className="light-border-2 btn flex min-h-[36px] items-center justify-center gap-2 border"
+        className="border-dark-4 btn flex min-h-[36px] items-center justify-center gap-2 border"
       >
         <p className="text-body-semibold text-light-1">Prev</p>
       </Button>
@@ -48,7 +48,7 @@ const Pagination = ({
       <Button
         disabled={!isNext || isDisabled}
         onClick={() => handleNavigation("next")}
-        className="light-border-2 btn flex min-h-[36px] items-center justify-center gap-2 border"
+        className="border-dark-4 btn flex min-h-[36px] items-center justify-center gap-2 border"
       >
         <p className="text-body-semibold text-light-1">Next</p>
       </Button>

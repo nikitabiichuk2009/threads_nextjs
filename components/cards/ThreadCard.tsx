@@ -166,7 +166,7 @@ const ThreadCard: React.FC<ThreadCardProps> = ({
         isComment ? "px-0 xs:px-7" : "p-7 bg-dark-2"
       }`}
     >
-      {currentUserClerkId === author.clerkId && (
+      {currentUserClerkId === author.clerkId && !isComment && (
         <div className="flex flex-row mb-4 md:mb-8 gap-3.5">
           <Link href={`/thread/${id}/edit`}>
             <Image
@@ -310,6 +310,52 @@ const ThreadCard: React.FC<ThreadCardProps> = ({
                     height={24}
                   />
                 </div>
+                {currentUserClerkId === author.clerkId && isComment && (
+                  <div className="flex flex-row gap-3.5 items-center">
+                    <Link href={`/thread/${id}/edit`}>
+                      <Image
+                        src={"/assets/edit.svg"}
+                        alt="edit"
+                        width={20}
+                        height={20}
+                        className="cursor-pointer object-contain"
+                      />
+                    </Link>
+                    <AlertDialog>
+                      <AlertDialogTrigger>
+                        <Image
+                          src={"/assets/delete.svg"}
+                          width={20}
+                          height={20}
+                          className="cursor-pointer object-contain"
+                          alt="delete"
+                        />
+                      </AlertDialogTrigger>
+                      <AlertDialogContent className="bg-dark-2 border-none">
+                        <AlertDialogHeader>
+                          <AlertDialogTitle className="text-light-1">
+                            Are you absolutely sure?
+                          </AlertDialogTitle>
+                          <AlertDialogDescription className="font-spaceGrotesk text-[14px] font-normal leading-[19.6px] text-gray-1">
+                            This action cannot be undone. This will permanently
+                            delete your {isComment ? "comment" : "thread"}.
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel className="mb-2 me-2 rounded-lg border-none px-5 py-2.5 text-sm font-medium transition-colors duration-300 ease-out hover:text-blue-700 focus:outline-none  bg-gray-800 text-gray-400  hover:bg-gray-700 hover:text-white">
+                            Cancel
+                          </AlertDialogCancel>
+                          <AlertDialogAction
+                            onClick={deleteThread}
+                            className="bg-primary-500 px-4 py-3 font-semibold !text-light-1 shadow-md transition-colors duration-300 ease-out hover:bg-purple-500"
+                          >
+                            Continue
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
+                  </div>
+                )}
                 {!isComment && pathName !== `/thread/${id}` && (
                   <Link href={`/thread/${id}`}>
                     <Image
