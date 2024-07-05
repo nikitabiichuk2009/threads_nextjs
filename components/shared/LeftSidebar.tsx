@@ -8,13 +8,13 @@ import { usePathname } from "next/navigation";
 import React from "react";
 import { Button } from "../ui/button";
 import { useRouter } from "next/navigation";
-import { useToast } from "@chakra-ui/react";
+import { useToast } from "../ui/use-toast";
 
 const LeftSidebar = () => {
   const pathName = usePathname();
   const { userId } = useAuth();
   const router = useRouter();
-  const toast = useToast();
+  const { toast } = useToast();
 
   return (
     <section className="leftsidebar custom-scrollbar">
@@ -85,8 +85,7 @@ const LeftSidebar = () => {
                 router.push("/");
                 toast({
                   title: "Successfully logged out.",
-                  status: "success",
-                  isClosable: true,
+                  className: "bg-green-500 border-none text-white",
                 });
                 return;
               }}

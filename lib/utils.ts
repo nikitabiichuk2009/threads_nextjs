@@ -79,3 +79,19 @@ export const removeKeysFromQuery = ({
     { skipNull: true }
   );
 };
+
+export const stringifyObject = (obj: any) => JSON.parse(JSON.stringify(obj));
+
+export interface SearchParamsProps {
+  searchParams: { [key: string]: string | undefined };
+}
+
+export const formatDate = (dateString: string) => {
+  const date = new Date(dateString);
+  const options: Intl.DateTimeFormatOptions = {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  };
+  return date.toLocaleDateString("en-US", options);
+};

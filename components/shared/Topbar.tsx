@@ -9,12 +9,12 @@ import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 import { Button } from "../ui/button";
-import { useToast } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
+import { useToast } from "../ui/use-toast";
 
 const Topbar = () => {
   const router = useRouter();
-  const toast = useToast();
+  const { toast } = useToast();
 
   return (
     <nav className="topbar">
@@ -36,8 +36,7 @@ const Topbar = () => {
                   router.push("/");
                   toast({
                     title: "Successfully logged out.",
-                    status: "success",
-                    isClosable: true,
+                    className: "bg-green-500 border-none text-white",
                   });
                   return;
                 }}

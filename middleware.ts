@@ -8,9 +8,10 @@ const publicRoutes = [
 
 // Matchers for protected routes
 const isProtectedRoute = createRouteMatcher([
-  "/ask-question",
+  "/create-thread",
   "/collection",
   "/profile",
+  "/activity",
 ]);
 const isPublicRoute = createRouteMatcher(publicRoutes);
 
