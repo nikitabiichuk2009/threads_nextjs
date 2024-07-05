@@ -1,17 +1,21 @@
 import UserCard from "@/components/cards/UserCard";
 import LocalSearchBar from "@/components/shared/LocalSearchBar";
 import NoResults from "@/components/shared/NoResults";
+import Pagination from "@/components/shared/Pagination";
 import { getAllUsers } from "@/lib/actions/user.action";
 import { SearchParamsProps, stringifyObject } from "@/lib/utils";
 import React from "react";
 
 const Search = async ({ searchParams }: SearchParamsProps) => {
   const searchQuery = searchParams ? searchParams.q : "";
+  const page = searchParams.page ? parseInt(searchParams.page) : 1;
 
   let allUsers;
+  let isNext;
   try {
-    const allUsersFetched = await getAllUsers({ searchQuery });
+    const allUsersFetched = await getAllUsers({ searchQuery, page });
     allUsers = stringifyObject(allUsersFetched.users);
+    isNext = stringifyObject(allUsersFetched.isNext);
   } catch (err) {
     console.log(err);
     return (
@@ -64,6 +68,9 @@ const Search = async ({ searchParams }: SearchParamsProps) => {
             );
           })
         )}
+      </div>
+      <div className="mt-10">
+        <Pagination isNext={isNext} pageNumber={page} />
       </div>
     </div>
   );

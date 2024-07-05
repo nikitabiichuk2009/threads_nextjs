@@ -6,15 +6,18 @@ import ThreadCard from "@/components/cards/ThreadCard";
 import { getUserById } from "@/lib/actions/user.action";
 import { SearchParamsProps, stringifyObject } from "@/lib/utils";
 import LocalSearchBar from "@/components/shared/LocalSearchBar";
+import Pagination from "@/components/shared/Pagination";
 
 const Home = async ({ searchParams }: SearchParamsProps) => {
   const searchQuery = searchParams ? searchParams.q : "";
+  const page = searchParams.page ? parseInt(searchParams.page) : 1;
+
   const { userId } = auth();
   let allThreads;
   let isNextPage;
   let currentUser;
   try {
-    const result = await fetchAllThreads({ searchQuery });
+    const result = await fetchAllThreads({ searchQuery, pageNumber: page });
     if (!userId) {
       currentUser = null;
     } else {
@@ -91,15 +94,7 @@ const Home = async ({ searchParams }: SearchParamsProps) => {
             })}
           </div>
         )}
-        {isNextPage && (
-          <button
-            onClick={() => {
-              /* Logic to load next page */
-            }}
-          >
-            Load More
-          </button>
-        )}
+        <Pagination isNext={isNextPage} pageNumber={page} />
       </section>
     </>
   );

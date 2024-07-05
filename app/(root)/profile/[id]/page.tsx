@@ -1,16 +1,28 @@
 import ThreadCard from "@/components/cards/ThreadCard";
 import NoResults from "@/components/shared/NoResults";
+import Pagination from "@/components/shared/Pagination";
 import ProfileHeader from "@/components/shared/ProfileHeader";
 import { getPostsByUser, getUserById } from "@/lib/actions/user.action";
-import { formatDate, stringifyObject } from "@/lib/utils";
+import { SearchParamsProps, formatDate, stringifyObject } from "@/lib/utils";
 import { auth } from "@clerk/nextjs/server";
 import React from "react";
 
-const ProfilePage = async ({ params }: { params: { id: string } }) => {
+const ProfilePage = async ({
+  params,
+  searchParams,
+}: {
+  params: { id: string };
+  searchParams: SearchParamsProps;
+}) => {
   let user;
   let currentUser;
   let userPosts;
+  let isNext;
+  let total;
   let formattedDate;
+  // @ts-ignore
+  const page = searchParams.page ? parseInt(searchParams.page) : 1;
+
   const { userId } = auth();
   try {
     if (userId) {
@@ -21,8 +33,14 @@ const ProfilePage = async ({ params }: { params: { id: string } }) => {
     }
     const viewedUser = await getUserById(params.id);
     user = stringifyObject(viewedUser);
-    const allUsersPosts = await getPostsByUser(params.id);
-    userPosts = stringifyObject(allUsersPosts);
+    const result = await getPostsByUser({
+      userClerkId: params.id,
+      page,
+    });
+    userPosts = stringifyObject(result.userPosts);
+    isNext = stringifyObject(result.hasNextPage);
+    total = stringifyObject(result.total);
+
     formattedDate = formatDate(user.joinDate);
   } catch (err) {
     console.log(err);
@@ -55,9 +73,7 @@ const ProfilePage = async ({ params }: { params: { id: string } }) => {
       <div className="mt-12">
         <h3 className="text-light-1 text-heading3-bold">
           Created Threads{" "}
-          <span className="ml-1 rounded-sm bg-light-4 px-2 py-1">
-            {userPosts.length}
-          </span>
+          <span className="ml-1 rounded-sm bg-light-4 px-2 py-1">{total}</span>
         </h3>
 
         <div className="flex flex-col gap-8 mt-9">
@@ -98,6 +114,9 @@ const ProfilePage = async ({ params }: { params: { id: string } }) => {
             />
           )}
         </div>
+      </div>
+      <div className="mt-10">
+        <Pagination isNext={isNext} pageNumber={page} />
       </div>
     </section>
   );

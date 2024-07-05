@@ -130,9 +130,18 @@ interface GetSavedPostsByUserParams {
   searchQuery?: string;
 }
 
+interface GetSavedPostsByUserParams {
+  userClerkId: string;
+  searchQuery?: string;
+  page?: number;
+  pageSize?: number;
+}
+
 export async function getSavedPostsByUser({
   userClerkId,
   searchQuery = "",
+  page = 1,
+  pageSize = 10,
 }: GetSavedPostsByUserParams) {
   try {
     await connectToDB();
@@ -145,6 +154,8 @@ export async function getSavedPostsByUser({
       throw new Error("User not found");
     }
 
+    const skip = (page - 1) * pageSize;
+
     const query: any = {
       _id: { $in: user.savedPosts },
     };
@@ -154,12 +165,18 @@ export async function getSavedPostsByUser({
     }
 
     const savedPosts = await Thread.find(query)
+      .sort({ createdAt: -1 }) // Sort by creation date, newest first
+      .skip(skip)
+      .limit(pageSize)
       .populate({ path: "author", model: User })
       .populate({ path: "community", model: Community })
       .populate({ path: "children", populate: { path: "author", model: User } })
       .exec();
 
-    return savedPosts;
+    const totalPostsCount = await Thread.countDocuments(query);
+    const hasNextPage = totalPostsCount > skip + savedPosts.length;
+
+    return { savedPosts, hasNextPage };
   } catch (err: any) {
     console.error("Error fetching saved posts:", err);
     throw new Error("Error fetching saved posts");
@@ -213,7 +230,17 @@ export async function likePost(
   }
 }
 
-export async function getPostsByUser(userClerkId: string) {
+interface GetPostsByUserParams {
+  userClerkId: string;
+  page?: number;
+  pageSize?: number;
+}
+
+export async function getPostsByUser({
+  userClerkId,
+  page = 1,
+  pageSize = 10,
+}: GetPostsByUserParams) {
   try {
     await connectToDB();
 
@@ -223,16 +250,28 @@ export async function getPostsByUser(userClerkId: string) {
       throw new Error("User not found");
     }
 
+    const skip = (page - 1) * pageSize;
+
     const userPosts = await Thread.find({
       author: user._id,
       $or: [{ parentId: null }, { parentId: { $exists: false } }],
     })
+      .sort({ createdAt: -1 }) // Sort by newest
+      .skip(skip)
+      .limit(pageSize)
       .populate({ path: "author", model: User })
       .populate({ path: "community", model: Community })
       .populate({ path: "children", populate: { path: "author", model: User } })
       .exec();
 
-    return userPosts;
+    const totalPostsCount = await Thread.countDocuments({
+      author: user._id,
+      $or: [{ parentId: null }, { parentId: { $exists: false } }],
+    });
+
+    const hasNextPage = totalPostsCount > skip + userPosts.length;
+
+    return { userPosts, hasNextPage, total: totalPostsCount };
   } catch (err: any) {
     console.error("Error fetching user posts:", err);
     throw new Error("Error fetching user posts");
@@ -248,7 +287,7 @@ interface GetAllUsersParams {
 export async function getAllUsers(params: GetAllUsersParams) {
   try {
     await connectToDB();
-    const { searchQuery, page = 1, pageSize = 20 } = params;
+    const { searchQuery, page = 1, pageSize = 10 } = params;
     const skip = (page - 1) * pageSize;
 
     const query: FilterQuery<typeof User> = {};

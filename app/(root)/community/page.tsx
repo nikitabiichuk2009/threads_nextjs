@@ -2,19 +2,24 @@ import CommunityCard from "@/components/cards/CommunityCard";
 import UserCard from "@/components/cards/UserCard";
 import LocalSearchBar from "@/components/shared/LocalSearchBar";
 import NoResults from "@/components/shared/NoResults";
+import Pagination from "@/components/shared/Pagination";
 import { fetchCommunities } from "@/lib/actions/community.action";
 import { SearchParamsProps, stringifyObject } from "@/lib/utils";
 import React from "react";
 
 const Search = async ({ searchParams }: SearchParamsProps) => {
   const searchQuery = searchParams ? searchParams.q : "";
+  const page = searchParams.page ? parseInt(searchParams.page) : 1;
 
   let allCommunities;
+  let isNext;
   try {
     const communities = await fetchCommunities({
       searchString: searchQuery,
+      pageNumber: page,
     });
     allCommunities = stringifyObject(communities.communities);
+    isNext = stringifyObject(communities.isNext);
   } catch (err) {
     console.log(err);
     return (
@@ -67,6 +72,9 @@ const Search = async ({ searchParams }: SearchParamsProps) => {
             );
           })
         )}
+      </div>
+      <div className="mt-10">
+        <Pagination isNext={isNext} pageNumber={page} />
       </div>
     </div>
   );

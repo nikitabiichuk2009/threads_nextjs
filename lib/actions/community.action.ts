@@ -132,7 +132,7 @@ export async function fetchCommunityPosts(id: string) {
 export async function fetchCommunities({
   searchString = "",
   pageNumber = 1,
-  pageSize = 20,
+  pageSize = 10,
   sortBy = "desc",
 }: {
   searchString?: string;
@@ -265,6 +265,7 @@ export async function removeUserFromCommunity(
 
     revalidatePath(`/community${communityId}`);
     revalidatePath("/");
+    revalidatePath("/community");
   } catch (error) {
     // Handle any errors
     console.error("Error removing user from community:", error);
@@ -292,6 +293,7 @@ export async function updateCommunityInfo(
     }
     revalidatePath(`/community${communityId}`);
     revalidatePath("/");
+    revalidatePath("/community");
   } catch (error) {
     // Handle any errors
     console.error("Error updating community information:", error);
@@ -329,6 +331,7 @@ export async function deleteCommunity(communityId: string) {
     await Promise.all(updateUserPromises);
 
     revalidatePath("/");
+    revalidatePath("/community");
   } catch (error) {
     console.error("Error deleting community: ", error);
     throw error;

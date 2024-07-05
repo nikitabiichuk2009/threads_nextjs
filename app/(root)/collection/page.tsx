@@ -6,25 +6,30 @@ import { getSavedPostsByUser, getUserById } from "@/lib/actions/user.action";
 import { redirect } from "next/navigation";
 import { SearchParamsProps, stringifyObject } from "@/lib/utils";
 import LocalSearchBar from "@/components/shared/LocalSearchBar";
+import Pagination from "@/components/shared/Pagination";
 
 const Collection = async ({ searchParams }: SearchParamsProps) => {
   const { userId } = auth();
   const searchQuery = searchParams ? searchParams.q : "";
+  const page = searchParams.page ? parseInt(searchParams.page) : 1;
 
   if (!userId) {
     redirect("/sign-in");
   }
 
   let savedThreads = [];
+  let isNext;
   let currentUser;
 
   try {
     const savedPostsResult = await getSavedPostsByUser({
       userClerkId: userId,
       searchQuery,
+      page,
     });
+    isNext = stringifyObject(savedPostsResult.hasNextPage);
     const userResult = await getUserById(userId);
-    savedThreads = savedPostsResult;
+    savedThreads = stringifyObject(savedPostsResult.savedPosts);
     currentUser = stringifyObject(userResult);
   } catch (err: any) {
     console.log(err);
@@ -65,7 +70,7 @@ const Collection = async ({ searchParams }: SearchParamsProps) => {
           />
         ) : (
           <div className="flex flex-col gap-5">
-            {savedThreads.map((thread) => {
+            {savedThreads.map((thread: any) => {
               const threadData = stringifyObject(thread);
               return (
                 <ThreadCard
@@ -90,6 +95,7 @@ const Collection = async ({ searchParams }: SearchParamsProps) => {
             })}
           </div>
         )}
+        <Pagination isNext={isNext} pageNumber={page} />
       </section>
     </>
   );

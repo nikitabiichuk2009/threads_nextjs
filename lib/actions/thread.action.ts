@@ -51,7 +51,7 @@ interface FetchAllThreadsParams {
 export async function fetchAllThreads({
   searchQuery = "",
   pageNumber = 1,
-  pageSize = 20,
+  pageSize = 10,
 }: FetchAllThreadsParams) {
   try {
     await connectToDB();
