@@ -59,7 +59,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
         </SignedIn>
       </div>
       <p className="mt-12 max-w-lg text-base-semibold sm:text-[26px] line-clamp-3 text-light-2">
-        Joined at: {joinedDate}
+        {type === "Community" ? "Created" : "Joined"} at: {joinedDate}
       </p>
       {bio && (
         <p className="mt-6 max-w-lg text-small-regular sm:text-base-regular line-clamp-3 sm:text-[18px] text-light-2">
