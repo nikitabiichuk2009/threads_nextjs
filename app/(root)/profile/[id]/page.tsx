@@ -50,6 +50,7 @@ const ProfilePage = async ({ params }: { params: { id: string } }) => {
         bioLink={user.portfolio || ""}
         location={user.location || ""}
         joinedDate={formattedDate}
+        type="User"
       />
       <div className="mt-12">
         <h3 className="text-light-1 text-heading3-bold">

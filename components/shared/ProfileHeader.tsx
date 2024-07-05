@@ -9,11 +9,12 @@ interface ProfileHeaderProps {
   img: string;
   name: string;
   username: string;
-  userIdView: string;
-  bio: string;
-  bioLink: string;
-  location: string;
+  userIdView?: string;
+  bio?: string;
+  bioLink?: string;
+  location?: string;
   joinedDate: string;
+  type: string;
 }
 
 const ProfileHeader: React.FC<ProfileHeaderProps> = ({
@@ -26,6 +27,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
   bioLink,
   location,
   joinedDate,
+  type,
 }) => {
   return (
     <div className="flex w-full flex-col justify-start">
