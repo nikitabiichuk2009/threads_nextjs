@@ -92,7 +92,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
             </Link>
           )}
         </SignedIn>
-        {type !== "User" && (
+        {type !== "User" && creator !== usersEmail && (
           <Button
             onClick={handleAskJoin}
             disabled={isSending}
