@@ -20,6 +20,7 @@ interface ProfileHeaderProps {
   type: string;
   creator?: string;
   usersEmail?: string;
+  notMember?: boolean;
 }
 
 const ProfileHeader: React.FC<ProfileHeaderProps> = ({
@@ -35,6 +36,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
   location,
   joinedDate,
   type,
+  notMember,
 }) => {
   const { toast } = useToast();
   const [isSending, setIsSending] = useState(false);
@@ -85,14 +87,17 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
         </div>
         <SignedIn>
           {accounClerkId === userIdView && type === "User" && (
-            <Link href={`/profile/${accounClerkId}/edit`}>
+            <Link
+              href={`/profile/${accounClerkId}/edit`}
+              className="max-md:w-full"
+            >
               <Button className="mt-8 md:mt-0 min-h-[46px] w-full md:w-auto md:min-w-[175px] bg-primary-500 font-semibold !text-light-1 shadow-md transition-colors duration-300 ease-out hover:bg-purple-500">
                 Edit profile
               </Button>
             </Link>
           )}
         </SignedIn>
-        {type !== "User" && creator !== usersEmail && (
+        {type !== "User" && creator !== usersEmail && notMember && (
           <Button
             onClick={handleAskJoin}
             disabled={isSending}

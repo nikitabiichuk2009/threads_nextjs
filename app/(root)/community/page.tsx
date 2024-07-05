@@ -46,7 +46,7 @@ const Search = async ({ searchParams }: SearchParamsProps) => {
         imgSrc="/assets/search.svg"
         otherClasses="flex-1"
       />
-      <div className="mt-10 flex flex-col gap-9">
+      <div className="mt-10 flex flex-wrap gap-9">
         {allCommunities.length === 0 ? (
           <NoResults
             title="No communities found"
