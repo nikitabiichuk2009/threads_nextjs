@@ -352,15 +352,19 @@ export async function sendRequest(email: string, creatorEmail: string) {
     // Setup email data
     const mailOptions = {
       from: process.env.ADMIN_EMAIL, // Sender address
-      to: process.env.ADMIN_EMAIL, // Admin email address
+      to: creatorEmail,
       subject: "Request to Join Community",
-      text: `Hello Admin,
+      text: `Hello ${creatorEmail},
 
-The user with email ${email} has requested to join the community managed by ${creatorEmail}. 
+The user with email ${email} has requested to join your community.
 
-Please inform ${creatorEmail} to send an invitation to ${email} to join the community.
+As the creator of the community, you have the authority to send invitations to new members. Please review this request and, if you approve, send an invitation to ${email} to join your community.
 
-Thank you.`,
+Thank you for your attention to this matter.
+
+Best regards,
+
+The Community Management Team (Nikita Biichuk)`,
     };
 
     // Send email
