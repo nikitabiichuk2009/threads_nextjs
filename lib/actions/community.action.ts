@@ -7,6 +7,7 @@ import Thread from "../models/thread.model";
 import User from "../models/user.model";
 
 import { connectToDB } from "../mongoose";
+import { revalidatePath } from "next/cache";
 
 export async function createCommunity(
   id: string,
@@ -197,7 +198,8 @@ export async function addMemberToCommunity(
     }
 
     await user.save();
-
+    revalidatePath(`/community${communityId}`);
+    revalidatePath("/");
     return community;
   } catch (error) {
     // Handle any errors
@@ -239,6 +241,9 @@ export async function removeUserFromCommunity(
       { $pull: { communities: communityIdObject._id } }
     );
 
+    revalidatePath(`/community${communityId}`);
+    revalidatePath("/");
+
     return { success: true };
   } catch (error) {
     // Handle any errors
@@ -265,6 +270,8 @@ export async function updateCommunityInfo(
     if (!updatedCommunity) {
       throw new Error("Community not found");
     }
+    revalidatePath(`/community${communityId}`);
+    revalidatePath("/");
 
     return updatedCommunity;
   } catch (error) {
@@ -304,7 +311,7 @@ export async function deleteCommunity(communityId: string) {
     });
 
     await Promise.all(updateUserPromises);
-
+    revalidatePath("/");
     return deletedCommunity;
   } catch (error) {
     console.error("Error deleting community: ", error);

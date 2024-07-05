@@ -317,7 +317,7 @@ const ThreadCard: React.FC<ThreadCardProps> = ({
 
                 {!isComment && !parentId && community && (
                   <Link
-                    href={`/communities/${community.id}`}
+                    href={`/community/${community.id}`}
                     className="flex items-center gap-2"
                   >
                     <p className="text-small-medium text-gray-1">
