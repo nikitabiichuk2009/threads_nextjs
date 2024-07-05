@@ -290,9 +290,9 @@ export async function deleteCommunity(communityId: string) {
       id: communityId.trim(),
     });
 
-    if (!deletedCommunity) {
-      throw new Error("Community not found: " + communityId);
-    }
+    // if (!deletedCommunity) {
+    //   throw new Error("Community not found: " + communityId);
+    // }
 
     // Delete all threads associated with the community
     await Thread.deleteMany({ community: deletedCommunity._id });

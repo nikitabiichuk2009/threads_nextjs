@@ -12,6 +12,7 @@ const CommunityDetails = async ({ params }: { params: { id: string } }) => {
   try {
     const communityDetails = await fetchCommunityDetails(params.id);
     community = stringifyObject(communityDetails);
+    console.log(community);
     formattedDate = formatDate(community.createdAt);
   } catch (err) {
     console.log(err);

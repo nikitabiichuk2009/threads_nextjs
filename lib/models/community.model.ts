@@ -9,6 +9,7 @@ export interface ICommunity extends Document {
   createdBy: Schema.Types.ObjectId;
   threads: Schema.Types.ObjectId[];
   members: Schema.Types.ObjectId[];
+  createdAt: Date;
 }
 
 const CommunitySchema = new Schema({
@@ -20,6 +21,7 @@ const CommunitySchema = new Schema({
   createdBy: { type: Schema.Types.ObjectId, ref: "User" },
   threads: [{ type: Schema.Types.ObjectId, ref: "Thread" }],
   members: [{ type: Schema.Types.ObjectId, ref: "User" }],
+  createdAt: { type: Date, default: Date.now },
 });
 
 const Community =
