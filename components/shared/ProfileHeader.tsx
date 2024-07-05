@@ -51,7 +51,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
         <SignedIn>
           {accounClerkId === userIdView && (
             <Link href={`/profile/${accounClerkId}/edit`}>
-              <Button className="min-h-[46px] min-w-[175px] bg-primary-500  font-semibold !text-light-1 shadow-md transition-colors duration-300 ease-out hover:bg-purple-500">
+              <Button className="min-h-[46px] sm:w-fit md:min-w-[175px] bg-primary-500  font-semibold !text-light-1 shadow-md transition-colors duration-300 ease-out hover:bg-purple-500">
                 Edit profile
               </Button>
             </Link>

@@ -166,6 +166,53 @@ const ThreadCard: React.FC<ThreadCardProps> = ({
         isComment ? "px-0 xs:px-7" : "p-7 bg-dark-2"
       }`}
     >
+      {currentUserClerkId === author.clerkId && (
+        <div className="flex flex-row mb-6 gap-3.5">
+          <Link href={`/thread/${id}/edit`}>
+            <Image
+              src={"/assets/edit.svg"}
+              alt="edit"
+              width={20}
+              height={20}
+              className="cursor-pointer object-contain"
+            />
+          </Link>
+          <AlertDialog>
+            <AlertDialogTrigger>
+              <Image
+                src={"/assets/delete.svg"}
+                width={20}
+                height={20}
+                className="cursor-pointer object-contain"
+                alt="delete"
+              />
+            </AlertDialogTrigger>
+            <AlertDialogContent className="bg-dark-2 border-none">
+              <AlertDialogHeader>
+                <AlertDialogTitle className="text-light-1">
+                  Are you absolutely sure?
+                </AlertDialogTitle>
+                <AlertDialogDescription className="font-spaceGrotesk text-[14px] font-normal leading-[19.6px] text-gray-1">
+                  This action cannot be undone. This will permanently delete
+                  your {isComment ? "comment" : "thread"}.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel className="mb-2 me-2 rounded-lg border-none px-5 py-2.5 text-sm font-medium transition-colors duration-300 ease-out hover:text-blue-700 focus:outline-none  bg-gray-800 text-gray-400  hover:bg-gray-700 hover:text-white">
+                  Cancel
+                </AlertDialogCancel>
+                <AlertDialogAction
+                  onClick={deleteThread}
+                  className="bg-primary-500 px-4 py-3 font-semibold !text-light-1 shadow-md transition-colors duration-300 ease-out hover:bg-purple-500"
+                >
+                  Continue
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        </div>
+      )}
+
       <div className="flex items-start justify-between">
         <div className="flex w-full flex-1 flex-row gap-4">
           <div className="flex flex-col items-center">
@@ -243,52 +290,6 @@ const ThreadCard: React.FC<ThreadCardProps> = ({
                     width={24}
                     height={24}
                   />
-                  {currentUserClerkId === author.clerkId && (
-                    <AlertDialog>
-                      <AlertDialogTrigger>
-                        <Image
-                          src={"/assets/delete.svg"}
-                          width={20}
-                          height={20}
-                          className="cursor-pointer object-contain"
-                          alt="delete"
-                        />
-                      </AlertDialogTrigger>
-                      <AlertDialogContent className="bg-dark-2 border-none">
-                        <AlertDialogHeader>
-                          <AlertDialogTitle className="text-light-1">
-                            Are you absolutely sure?
-                          </AlertDialogTitle>
-                          <AlertDialogDescription className="font-spaceGrotesk text-[14px] font-normal leading-[19.6px] text-gray-1">
-                            This action cannot be undone. This will permanently
-                            delete your {isComment ? "comment" : "thread"}.
-                          </AlertDialogDescription>
-                        </AlertDialogHeader>
-                        <AlertDialogFooter>
-                          <AlertDialogCancel className="mb-2 me-2 rounded-lg border-none px-5 py-2.5 text-sm font-medium transition-colors duration-300 ease-out hover:text-blue-700 focus:outline-none  bg-gray-800 text-gray-400  hover:bg-gray-700 hover:text-white">
-                            Cancel
-                          </AlertDialogCancel>
-                          <AlertDialogAction
-                            onClick={deleteThread}
-                            className="bg-primary-500 px-4 py-3 font-semibold !text-light-1 shadow-md transition-colors duration-300 ease-out hover:bg-purple-500"
-                          >
-                            Continue
-                          </AlertDialogAction>
-                        </AlertDialogFooter>
-                      </AlertDialogContent>
-                    </AlertDialog>
-                  )}
-                  {currentUserClerkId === author.clerkId && (
-                    <Link href={`/thread/${id}/edit`}>
-                      <Image
-                        src={"/assets/edit.svg"}
-                        alt="edit"
-                        width={20}
-                        height={20}
-                        className="cursor-pointer object-contain"
-                      />
-                    </Link>
-                  )}
                 </div>
                 {!isComment && pathName !== `/thread/${id}` && (
                   <Link href={`/thread/${id}`}>
@@ -304,14 +305,14 @@ const ThreadCard: React.FC<ThreadCardProps> = ({
               </div>
               {comments.length > 0 && (
                 <Link href={`/thread/${id}`}>
-                  <p className="mt-1 text-subtle-medium text-gray-1">
+                  <p className="mt-1 text-subtle-medium sm:text-small-medium text-gray-1">
                     {comments?.length}{" "}
                     {comments?.length === 1 ? "reply" : "replies"}
                   </p>
                 </Link>
               )}
               <div className="flex flex-row items-center gap-2">
-                <p className="text-small-medium text-gray-1">
+                <p className="text-subtle-medium sm:text-small-medium text-gray-1">
                   {formatDate(createdAt)}
                 </p>
 
@@ -320,7 +321,7 @@ const ThreadCard: React.FC<ThreadCardProps> = ({
                     href={`/community/${community.id}`}
                     className="flex items-center gap-2"
                   >
-                    <p className="text-small-medium text-gray-1">
+                    <p className="text-subtle-medium sm:text-small-medium text-gray-1">
                       - {community.name} Community
                     </p>
                     <div className="relative size-8">

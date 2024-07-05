@@ -34,13 +34,13 @@ const Activity = async () => {
   return (
     <section>
       <h1 className="head-text text-light-1">Activity</h1>\
-      <p className="text-base-regular text-light-2 flex flex-row text-[21px]">
+      <p className="text-small-medium sm:text-base-medium text-light-2 flex flex-row">
         Your posts have received&nbsp;
         <span className="font-semibold">{activity.totalLikes}</span>&nbsp;
         <span className="flex flex-row font-semibold">
           {activity.totalLikes === 1 ? "like" : "likes"}&nbsp;
           <Image
-            className="object-contain"
+            className="object-contain max-sm:w-5 max-sm:h-5"
             alt="heart red"
             src={"/assets/heart-filled.svg"}
             width={24}
