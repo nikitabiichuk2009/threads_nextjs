@@ -31,7 +31,11 @@ const CreateThread = async () => {
   return (
     <>
       <h1 className="head-text text-light-1">Create Thread</h1>
-      <Thread userId={mongoUser._id ? mongoUser._id : ""} />
+      <Thread
+        userId={mongoUser._id ? mongoUser._id : ""}
+        type="create"
+        initialValues={{ text: "", id: "" }}
+      />
     </>
   );
 };

@@ -71,6 +71,7 @@ const Collection = async ({ searchParams }: SearchParamsProps) => {
                 <ThreadCard
                   key={threadData._id}
                   id={threadData._id}
+                  parentId={threadData.parentId}
                   currentUserClerkId={userId ? userId : ""}
                   content={threadData.text}
                   author={threadData.author}

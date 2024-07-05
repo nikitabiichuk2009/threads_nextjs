@@ -51,6 +51,7 @@ const ThreadCard: React.FC<ThreadCardProps> = ({
   createdAt,
   comments = [],
   isComment,
+  parentId,
   isSaved,
   isLiked,
 }) => {
@@ -212,7 +213,7 @@ const ThreadCard: React.FC<ThreadCardProps> = ({
                       onClick={handleLikePost}
                     />
                   </div>
-                  {!isComment && (
+                  {!isComment && !parentId && (
                     <Image
                       src={
                         isSaved ? "/assets/star-filled.svg" : "/assets/star.svg"

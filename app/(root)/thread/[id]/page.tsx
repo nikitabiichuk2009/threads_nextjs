@@ -52,6 +52,7 @@ const Thread = async ({ params }: { params: { id: string } }) => {
           id={threadData._id}
           currentUserClerkId={userId ? userId : ""}
           content={threadData.text}
+          parentId={threadData.parentId}
           isComment={false}
           author={threadData.author}
           community={threadData.community}

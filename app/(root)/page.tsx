@@ -72,6 +72,7 @@ const Home = async ({ searchParams }: SearchParamsProps) => {
                   author={threadData.author}
                   community={threadData.community}
                   createdAt={threadData.createdAt}
+                  parentId={threadData.parentId}
                   comments={threadData?.children}
                   isComment={false}
                   likes={threadData.likes}

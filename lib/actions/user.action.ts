@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import User from "../models/user.model";
 import { connectToDB } from "../mongoose";
 import Thread from "../models/thread.model";
-import { Types } from "mongoose";
+import { Schema, Types } from "mongoose";
 import { SortOrder } from "mongoose";
 import { FilterQuery } from "mongoose";
 
@@ -271,5 +271,41 @@ export async function getAllUsers(params: GetAllUsersParams) {
   } catch (err) {
     console.error("Error fetching users:", err);
     throw new Error("Error fetching users");
+  }
+}
+
+export async function getActivity(userId: string) {
+  try {
+    await connectToDB();
+
+    // Find all threads created by the user
+    const userThreads = await Thread.find({ author: userId });
+
+    // Collect all children thread IDs
+    const childThreadsIds = userThreads.reduce(
+      (acc: Schema.Types.ObjectId[], userThread) => {
+        return acc.concat(userThread.children);
+      },
+      []
+    );
+
+    // Find all replies to the user's threads
+    const replies = await Thread.find({
+      _id: { $in: childThreadsIds },
+      author: { $ne: userId },
+    }).populate({
+      path: "author",
+      model: User,
+    });
+
+    // Calculate total likes on the user's threads
+    const totalLikes = userThreads.reduce((acc: number, userThread) => {
+      return acc + userThread.likes;
+    }, 0);
+
+    return { replies, totalLikes };
+  } catch (err: any) {
+    console.log(err);
+    throw new Error("Failed to load activity", err);
   }
 }
