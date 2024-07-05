@@ -40,7 +40,6 @@ export default function RootLayout({
               <div className="w-full max-w-4xl">{children}</div>
               <Toaster />
             </section>
-            <RightSidebar />
           </main>
           <Bottombar />
         </body>

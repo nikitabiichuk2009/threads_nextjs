@@ -55,8 +55,11 @@ const ProfilePage = async ({ params }: { params: { id: string } }) => {
       <div className="mt-12">
         <h3 className="text-light-1 text-heading3-bold">
           Created Threads{" "}
-          <span className="bg-light-4 p-1">{userPosts.length}</span>
+          <span className="ml-1 rounded-sm bg-light-4 px-2 py-1">
+            {userPosts.length}
+          </span>
         </h3>
+
         <div className="flex flex-col gap-8 mt-9">
           {userPosts.length > 0 ? (
             userPosts.map((threadData: any) => {

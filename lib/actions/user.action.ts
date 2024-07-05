@@ -7,6 +7,7 @@ import Thread from "../models/thread.model";
 import { Schema, Types } from "mongoose";
 import { SortOrder } from "mongoose";
 import { FilterQuery } from "mongoose";
+import Community from "../models/community.model";
 
 export async function createUser(userData: object, path: string) {
   try {
@@ -154,6 +155,7 @@ export async function getSavedPostsByUser({
 
     const savedPosts = await Thread.find(query)
       .populate({ path: "author", model: User })
+      .populate({ path: "community", model: Community })
       .populate({ path: "children", populate: { path: "author", model: User } })
       .exec();
 
@@ -226,6 +228,7 @@ export async function getPostsByUser(userClerkId: string) {
       $or: [{ parentId: null }, { parentId: { $exists: false } }],
     })
       .populate({ path: "author", model: User })
+      .populate({ path: "community", model: Community })
       .populate({ path: "children", populate: { path: "author", model: User } })
       .exec();
 

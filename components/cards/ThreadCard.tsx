@@ -302,7 +302,7 @@ const ThreadCard: React.FC<ThreadCardProps> = ({
                   </Link>
                 )}
               </div>
-              {isComment && comments.length > 0 && (
+              {comments.length > 0 && (
                 <Link href={`/thread/${id}`}>
                   <p className="mt-1 text-subtle-medium text-gray-1">
                     {comments?.length}{" "}
