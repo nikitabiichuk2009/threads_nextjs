@@ -1,7 +1,7 @@
 "use server";
 
 import { FilterQuery, SortOrder } from "mongoose";
-
+import nodemailer from "nodemailer";
 import Community from "../models/community.model";
 import Thread from "../models/thread.model";
 import User from "../models/user.model";
@@ -335,5 +335,39 @@ export async function deleteCommunity(communityId: string) {
   } catch (error) {
     console.error("Error deleting community: ", error);
     throw error;
+  }
+}
+
+export async function sendRequest(email: string, creatorEmail: string) {
+  try {
+    // Create a transporter object using SMTP transport
+    const transporter = nodemailer.createTransport({
+      service: "gmail", // e.g., Gmail
+      auth: {
+        user: process.env.EMAIL_USER, // Your email address
+        pass: process.env.EMAIL_PASS, // Your email password or app-specific password
+      },
+    });
+
+    // Setup email data
+    const mailOptions = {
+      from: process.env.ADMIN_EMAIL, // Sender address
+      to: process.env.ADMIN_EMAIL, // Admin email address
+      subject: "Request to Join Community",
+      text: `Hello Admin,
+
+The user with email ${email} has requested to join the community managed by ${creatorEmail}. 
+
+Please inform ${creatorEmail} to send an invitation to ${email} to join the community.
+
+Thank you.`,
+    };
+
+    // Send email
+    const info = await transporter.sendMail(mailOptions);
+    console.log("Email sent: " + info.response);
+  } catch (error) {
+    console.error("Error sending email:", error);
+    throw new Error("Failed to send request email");
   }
 }

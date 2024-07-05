@@ -48,6 +48,8 @@ const CommunityDetails = async ({ params }: { params: { id: string } }) => {
         name={community.name}
         username={community.username}
         joinedDate={formattedDate}
+        creator={community.createdBy.email}
+        usersEmail={currentUser.email ? currentUser.email : ""}
         type="Community"
       />
       <div className="mt-9">
