@@ -1,6 +1,6 @@
 "use server";
 
-import { FilterQuery, SortOrder, Types } from "mongoose";
+import { FilterQuery, SortOrder } from "mongoose";
 
 import Community from "../models/community.model";
 import Thread from "../models/thread.model";
@@ -294,10 +294,8 @@ export async function deleteCommunity(communityId: string) {
     //   throw new Error("Community not found: " + communityId);
     // }
 
-    const communityObjectId = new Types.ObjectId(communityId);
-
     // Delete all threads associated with the community
-    await Thread.deleteMany({ community: communityObjectId });
+    await Thread.deleteMany({ community: deletedCommunity._id });
 
     // Find all users who are part of the community
     const communityUsers = await User.find({ communities: communityId });
