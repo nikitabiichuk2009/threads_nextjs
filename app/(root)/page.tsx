@@ -7,6 +7,8 @@ import { getUserById } from "@/lib/actions/user.action";
 import { SearchParamsProps, stringifyObject } from "@/lib/utils";
 import LocalSearchBar from "@/components/shared/LocalSearchBar";
 import Pagination from "@/components/shared/Pagination";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
 
 const Home = async ({ searchParams }: SearchParamsProps) => {
   const searchQuery = searchParams ? searchParams.q : "";
@@ -43,6 +45,14 @@ const Home = async ({ searchParams }: SearchParamsProps) => {
   return (
     <>
       <h1 className="head-text text-white text-left mb-10">Home</h1>
+      <Link
+        href="/create-thread"
+        className="flex justify-end max-sm:w-full mb-12"
+      >
+        <Button className="bg-primary-500 hover:bg-purple-500 ease-in-out duration-300 transition-colors min-h-[46px] px-4 py-3 font-semibold !text-light-1">
+          Create a thread
+        </Button>
+      </Link>
       <LocalSearchBar
         searchFor="Search for threads"
         iconPosition="left"
