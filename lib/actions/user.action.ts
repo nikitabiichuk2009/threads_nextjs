@@ -338,7 +338,7 @@ export async function getActivity(userId: string) {
     }).populate({
       path: "author",
       model: User,
-    });
+    }).sort({ createdAt: -1 });
 
     // Calculate total likes on the user's threads
     const totalLikes = userThreads.reduce((acc: number, userThread) => {
