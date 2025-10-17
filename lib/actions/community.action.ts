@@ -338,7 +338,7 @@ export async function deleteCommunity(communityId: string) {
   }
 }
 
-export async function sendRequest(email: string, creatorEmail: string) {
+export async function sendRequest(communityName: string, email: string, creatorEmail: string) {
   try {
     // Create a transporter object using SMTP transport
     const transporter = nodemailer.createTransport({
@@ -356,7 +356,7 @@ export async function sendRequest(email: string, creatorEmail: string) {
       subject: "Request to Join Community",
       text: `Hello ${creatorEmail},
 
-The user with email ${email} has requested to join your community.
+The user with email ${email} has requested to join your community '${communityName}'.
 
 As the creator of the community, you have the authority to send invitations to new members. Please review this request and, if you approve, send an invitation to ${email} to join your community.
 

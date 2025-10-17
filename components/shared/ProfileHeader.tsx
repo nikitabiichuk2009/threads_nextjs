@@ -41,7 +41,16 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
   const { toast } = useToast();
   console.log(isMember);
   const [isSending, setIsSending] = useState(false);
+  const [isSent, setIsSent] = useState(false);
+
   const handleAskJoin = async () => {
+    if (isSent) {
+      toast({
+        title: "Request already sent",
+        className: "bg-red-500 border-none text-white",
+      });
+      return;
+    }
     if (!usersEmail) {
       toast({
         title:
@@ -52,12 +61,13 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
     }
     setIsSending(true);
     try {
-      await sendRequest(usersEmail, creator!);
+      await sendRequest(name, usersEmail, creator!);
       toast({
         title: "Successfully sent a request to join",
         className: "bg-green-500 border-none text-white",
       });
       setIsSending(false);
+      setIsSent(true);
     } catch (err) {
       console.log(err);
       toast({
@@ -101,7 +111,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
         {type !== "User" && !isMember && (
           <Button
             onClick={handleAskJoin}
-            disabled={isSending}
+            disabled={isSending || isSent}
             className="mt-8 md:mt-0 min-h-[46px] w-full md:w-auto md:min-w-[175px] bg-primary-500 font-semibold !text-light-1 shadow-md transition-colors duration-300 ease-out hover:bg-purple-500"
           >
             Ask to join
